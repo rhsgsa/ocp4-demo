@@ -2,7 +2,7 @@
 
 This guide helps to configure Elastic Cloud on Kubernetes (ECK) on OpenShift and ClusterLogForwarding API to ship the logs to ECK.
 
-The following scrips expects `PWD` to be in ``elastic-eck`.
+The following scripts expects `PWD` to be in ``elastic-eck`.
 
 == Generate ES server certificate
 [source, bash]
@@ -88,14 +88,15 @@ $ oc create -f kibana.yaml
 $ oc create -f kibana-route.yaml
 
 # URL
-$ oc get route kibana -n elastic -o jsonpath='{.spec.host}'; echo
+$ KIBANA_ROUTE=`oc get route kibana -n elastic -o jsonpath='{.spec.host}'`
+$ echo "https://$KIBANA_ROUTE"
 
 # Create index patterns 
-$ curl -u elastic:$PASSWORD -k -X POST -H 'Content-Type: application/json' --header 'kbn-xsrf: this_is_required_header' "https://kibana-elastic.$ROUTE_SUBDOMAIN/api/saved_objects/index-pattern/infra-write*?overwrite=true" --data '{"attributes":{"title":"infra-write*","timeFieldName":"@timestamp"}}'; echo
+$ curl -u elastic:$PASSWORD -k -X POST -H 'Content-Type: application/json' --header 'kbn-xsrf: this_is_required_header' "https://$KIBANA_ROUTE/api/saved_objects/index-pattern/infra-write*?overwrite=true" --data '{"attributes":{"title":"infra-write*","timeFieldName":"@timestamp"}}'; echo
 
-$ curl -u elastic:$PASSWORD -k -X POST -H 'Content-Type: application/json' --header 'kbn-xsrf: this_is_required_header' "https://kibana-elastic.$ROUTE_SUBDOMAIN/api/saved_objects/index-pattern/app-write*?overwrite=true" --data '{"attributes":{"title":"app-write*","timeFieldName":"@timestamp"}}'; echo
+$ curl -u elastic:$PASSWORD -k -X POST -H 'Content-Type: application/json' --header 'kbn-xsrf: this_is_required_header' "https://$KIBANA_ROUTE/api/saved_objects/index-pattern/app-write*?overwrite=true" --data '{"attributes":{"title":"app-write*","timeFieldName":"@timestamp"}}'; echo
 
-$ curl -u elastic:$PASSWORD -k -X POST -H 'Content-Type: application/json' --header 'kbn-xsrf: this_is_required_header' "https://kibana-elastic.$ROUTE_SUBDOMAIN/api/saved_objects/index-pattern/audit-write*?overwrite=true" --data '{"attributes":{"title":"audit-write*","timeFieldName":"@timestamp"}}'; echo
+$ curl -u elastic:$PASSWORD -k -X POST -H 'Content-Type: application/json' --header 'kbn-xsrf: this_is_required_header' "https://$KIBANA_ROUTE/api/saved_objects/index-pattern/audit-write*?overwrite=true" --data '{"attributes":{"title":"audit-write*","timeFieldName":"@timestamp"}}'; echo
 ----
 
 == Create OpenShift logging for external ES
