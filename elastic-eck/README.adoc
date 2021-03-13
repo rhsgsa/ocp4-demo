@@ -43,7 +43,7 @@ $ oc create -f elastic-route.yaml
 Elastic/Kibana password is
 [source, bash]
 ----
-$ PASSWORD=`oc get secret elasticsearch-sample-es-elastic-user -n elastic -o jsonpath="{.data.elastic}" | base64 -D`
+$ PASSWORD=`oc get secret elasticsearch-sample-es-elastic-user -n elastic -o jsonpath="{.data.elastic}" | base64 -d`
 
 $ echo $PASSWORD
 ----
@@ -107,7 +107,7 @@ $ oc create -f openshift-logging-og.yaml
 $ oc create -f cluster-logging-sub.yaml
 
 # Add the secrets for Elasticsearch
-$ oc create secret generic es-secret  --from-file=ca-bundle.crt=tls.crt --from-file=tls.crt=client.crt --from-file=tls.key=client.key -n openshift-logging
+$ oc create secret generic es-secret --from-file=ca-bundle.crt=tls.crt --from-file=tls.crt=client.crt --from-file=tls.key=client.key -n openshift-logging
 
 $ oc create -f clusterlogforwarder.yaml
 $ oc create -f clusterlogging.yaml
