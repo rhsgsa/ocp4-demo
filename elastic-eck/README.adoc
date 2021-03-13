@@ -1,0 +1,113 @@
+= Introduction
+
+This guide helps to configure Elastic Cloud on Kubernetes (ECK) on OpenShift and ClusterLogForwarding API to ship the logs to ECK.
+
+The following scrips expects `PWD` to be in ``elastic-eck`.
+
+== Generate ES server certificate
+[source, bash]
+----
+# Get Route Subdomain
+$ ROUTE_SUBDOMAIN=`oc get DNSRecord default-wildcard -n openshift-ingress-operator -o jsonpath="{.spec.dnsName}" | cut -c3- | sed 's/.$//'`
+
+$ echo $ROUTE_SUBDOMAIN
+
+$ openssl req -x509 -sha256 -nodes -newkey rsa:4096 -days 365 -subj "/CN=*.$ROUTE_SUBDOMAIN" -addext "subjectAltName=DNS:*.$ROUTE_SUBDOMAIN,DNS:elasticsearch-sample-es-http.elastic.svc" -keyout tls.key -out tls.crt
+----
+
+== Generate client certificate
+[source, bash]
+----
+$ openssl req -nodes -new -newkey rsa:4096 -keyout client.key -out client.csr -subj "/C=/ST=/L=/O=/OU=/CN=Client_User"
+$ openssl x509 -req -in client.csr -CA tls.crt -CAkey tls.key -CAcreateserial -out client.crt -days 365 -sha256
+----
+
+== Create ES cluster
+
+[source, bash]
+----
+$ oc create -f elastic-proj.yaml
+$ oc create -f eck-og.yaml
+$ oc create -f eck-sub.yaml
+
+$ oc create secret generic es-cert --from-file=ca.crt=tls.crt --from-file=tls.crt=tls.crt --from-file=tls.key=tls.key -n elastic
+
+# Activate Trial
+$ oc create -f elastic-trial.yaml
+
+$ oc create -f elastic.yaml
+$ oc create -f elastic-route.yaml
+----
+
+== Create role mapping for user
+Elastic/Kibana password is
+[source, bash]
+----
+$ PASSWORD=`oc get secret elasticsearch-sample-es-elastic-user -n elastic -o jsonpath="{.data.elastic}" | base64 -D`
+
+$ echo $PASSWORD
+----
+
+[source, bash]
+----
+$ curl -XPUT -u elastic:$PASSWORD -H 'Content-Type: application/json' https://elasticsearch-elastic.$ROUTE_SUBDOMAIN/_security/role_mapping/ingest --cacert tls.crt -d'
+{
+  "enabled": true,
+  "roles": [
+      "superuser"
+  ],
+  "rules": {
+      "all": [
+      {
+          "field": {
+          "dn": "*"
+          }
+      }
+      ]
+  },
+  "metadata": {}
+}'; echo
+----
+
+== Test Client permission
+[source, bash]
+----
+$ curl -XPUT --header 'Content-Type: application/json' https://elasticsearch-elastic.$ROUTE_SUBDOMAIN/samples/_doc/1 -d '{
+   "school" : "Harvard"
+}' --key client.key --cert client.crt --cacert tls.crt; echo 
+----
+
+== Create Kibana 
+Wait for ES to be Ready before creating Kibana. If Kibana doesn't get into Ready state, restart the pod
+
+Username for Kibana is `elastic`. Password is $PASSWORD
+
+[source, bash]
+----
+$ oc create -f kibana.yaml
+$ oc create -f kibana-route.yaml
+
+# URL
+$ oc get route kibana -n elastic -o jsonpath='{.spec.host}'; echo
+
+# Create index patterns 
+$ curl -u elastic:$PASSWORD -k -X POST -H 'Content-Type: application/json' --header 'kbn-xsrf: this_is_required_header' "https://kibana-elastic.$ROUTE_SUBDOMAIN/api/saved_objects/index-pattern/infra-write*?overwrite=true" --data '{"attributes":{"title":"infra-write*","timeFieldName":"@timestamp"}}'; echo
+
+$ curl -u elastic:$PASSWORD -k -X POST -H 'Content-Type: application/json' --header 'kbn-xsrf: this_is_required_header' "https://kibana-elastic.$ROUTE_SUBDOMAIN/api/saved_objects/index-pattern/app-write*?overwrite=true" --data '{"attributes":{"title":"app-write*","timeFieldName":"@timestamp"}}'; echo
+
+$ curl -u elastic:$PASSWORD -k -X POST -H 'Content-Type: application/json' --header 'kbn-xsrf: this_is_required_header' "https://kibana-elastic.$ROUTE_SUBDOMAIN/api/saved_objects/index-pattern/audit-write*?overwrite=true" --data '{"attributes":{"title":"audit-write*","timeFieldName":"@timestamp"}}'; echo
+----
+
+== Create OpenShift logging for external ES
+[source, bash]
+----
+$ oc create -f openshift-logging-proj.yaml
+$ oc create -f openshift-logging-og.yaml
+$ oc create -f cluster-logging-sub.yaml
+
+# Add the secrets for Elasticsearch
+$ oc create secret generic es-secret  --from-file=ca-bundle.crt=tls.crt --from-file=tls.crt=client.crt --from-file=tls.key=client.key -n openshift-logging
+
+$ oc create -f clusterlogforwarder.yaml
+$ oc create -f clusterlogging.yaml
+----

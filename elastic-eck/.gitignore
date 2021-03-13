@@ -1,0 +1,6 @@
+client.crt
+client.csr
+client.key
+tls.crt
+tls.key
+tls.srl

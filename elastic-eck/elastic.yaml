@@ -1,0 +1,64 @@
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:  
+  name: elasticsearch-sample  
+  namespace: elastic
+spec:
+  auth: {}
+  http:
+    service:
+      metadata:
+        creationTimestamp: null
+      spec: {}
+    tls:
+      certificate: 
+        secretName: es-cert
+  nodeSets:
+    - config:
+        node.attr.attr_name: attr_value
+        node.roles:
+          - master
+          - data
+        node.store.allow_mmap: false
+        xpack.security.authc.realms.pki.pki1.order: -999
+        xpack.security.transport.ssl.client_authentication: optional
+        xpack.security.http.ssl.client_authentication: optional
+        xpack.security.http.ssl.verification_mode: none
+        
+      count: 3
+      volumeClaimTemplates:
+      - metadata:
+          name: elasticsearch-data
+        spec:
+          accessModes:
+          - ReadWriteOnce
+          resources:
+            requests:
+              storage: 100Gi          
+      name: default
+      podTemplate:
+        metadata:
+          creationTimestamp: null
+          labels:
+            foo: bar
+        spec:
+          containers:
+            - name: elasticsearch
+              resources:
+                limits:
+                  cpu: '4'
+                  memory: 16Gi
+                requests:
+                  cpu: '4'
+                  memory: 16Gi
+  transport:
+    service:
+      metadata:
+        creationTimestamp: null
+      spec: {}
+    tls:
+      certificate: {}
+  updateStrategy:
+    changeBudget: {}
+  version: 7.11.0
+

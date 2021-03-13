@@ -1,0 +1,28 @@
+apiVersion: logging.openshift.io/v1
+kind: ClusterLogForwarder
+metadata:
+  name: instance
+  namespace: openshift-logging
+spec:
+  outputs:
+    - name: elasticsearch-secure
+      secret:
+        name: es-secret
+      type: elasticsearch
+      url: 'https://elasticsearch-sample-es-http.elastic.svc:9200'
+  pipelines:
+    - inputRefs:
+        - application
+        - audit
+      labels:
+        logs: application
+      name: application-logs
+      outputRefs:
+        - elasticsearch-secure
+    - inputRefs:
+        - infrastructure
+      labels:
+        logs: audit-infra
+      name: infrastructure-audit-logs
+      outputRefs:
+        - elasticsearch-secure

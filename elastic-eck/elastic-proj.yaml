@@ -1,0 +1,8 @@
+kind: Project
+apiVersion: project.openshift.io/v1
+metadata:
+  name: elastic  
+spec:
+  finalizers:
+    - kubernetes
+
