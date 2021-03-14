@@ -88,4 +88,4 @@ $ $ curl -v http://mnist-draw.demo.ltsai.com/
 < ETag: W/"8b3-aeROoJJ5IElCRwtF3E3MgTWZmmA"
 ----
 
-image::images/mnist-draw.png[mnist-draw, 640, 480, align="center"]
+image::images/mnist-draw.png[mnist-draw, align="center"]
