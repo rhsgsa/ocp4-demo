@@ -86,6 +86,6 @@ $ $ curl -v http://mnist-draw.demo.ltsai.com/
 < Connection: keep-alive
 < X-Powered-By: Express
 < ETag: W/"8b3-aeROoJJ5IElCRwtF3E3MgTWZmmA"
----
+----
 
-image::images/mnist-draw.img[MNIST Draw]
+image::images/mnist-draw.png[mnist-draw, 640, 480, align="center"]
