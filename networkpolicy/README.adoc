@@ -1,0 +1,48 @@
+
+= Introduction
+
+This demostrate the creattion of a custom ClusterRole to prevent a user from deleting away `NetworkPolicy`.
+
+== Create a new ClusterRole
+[source, bash]
+----
+$ oc create -f clusterRole-ns-admin.yaml
+----
+
+== Disabling project self-provisioning
+
+Docs can be found https://docs.openshift.com/container-platform/4.6/applications/projects/configuring-project-creation.html#customizing-project-request-message_configuring-project-creation[here].
+
+[source, bash]
+----
+$ oc patch clusterrolebinding.rbac self-provisioners -p '{"subjects": null}'
+
+# Edit to set rbac.authorization.kubernetes.io/autoupdate: "false"
+$ oc edit clusterrolebinding.rbac self-provisioners
+----
+
+== Create a new group and add users
+[source, bash]
+----
+$ oc new-project pacman-dev
+
+$ oc adm groups new pacman-dev-users
+$ oc adm groups add-users pacman-dev-users user1
+$ oc adm groups add-users pacman-dev-users user2
+----
+
+== Create loal role binding
+[source, bash]
+----
+$ oc create -f roleBindingNSAdmin.yaml
+----
+
+== RHPDS Project Request Template
+
+RHPS has a default project request template. You can modify them here:
+[source, bash]
+----
+$ oc edit project.config.openshift.io/cluster
+$ oc edit Template -n openshift-config
+----
+ 

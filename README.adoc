@@ -11,4 +11,7 @@ This is a collection of demos for OpenShift 4.
 |Using NGINX Ingress Controller
 |link:nginx-ingress/README.adoc[nginx-ingress]
 
+|Using NetworkPolicy
+|link:networkpolicy/README.adoc[networkpolicy]
+
 |===
