@@ -1,39 +1,52 @@
 
 = Introduction
 
+This demonstrates the usage of network policy between the app and mongo database only. External ingress is only allowed to pacman app. 
+
 == Setup group and users
 
 Follow the instructions link:../rbac/README.adoc[here] first. 
 
-== Deploy pac man app
+== Deploy Pac-Man app
 [source, bash]
 ----
 $ oc create -f pacman.yaml 
-$ oc create -f pacman-networkpolicies.yaml 
-$ oc create -f paxcman-route.yaml
-
 $ oc create -f mongodb.yaml
-$ oc create -f mongo-networkpolicies.yaml
 ----
 
-== Test network policy
-
-Create another namespace
+== Deploy a http app into a third namespace.
 [source, bash]
 ----
 $ oc new-project demo-http
 $ oc new-app https://github.com/sclorg/httpd-ex.git --name=httpd -n demo-http
----
+----
 
+== Create the network policies
+[source, bash]
+----
+$ oc create -f deny-from-other-namespaces -n pacman-dev-app
+$ oc create -f deny-from-othernamespaces -n -n pacman-dev-mongo
+----
+
+== Test network policy
 Test from `pacman-dev-app` namespace to `pacman-dev-mongo` namespace. T
+[source, bash]
+----
 $ oc rsh <pod> -n pacman-dev-app
 $ telnet to
+----
 
 Test ingress to `pacman-dev-app`
+[source, bash]
+----
 $ curl http://
+----
 
 Test pacman namespace to http namespace. 
+[source, bash]
+----
 $ oc rsh
 curl http://http.demo-http.svc
 $ oc rsh
 curl http://http.demo-http.svc
+----
