@@ -1,48 +1,39 @@
 
 = Introduction
 
-This demostrate the creattion of a custom ClusterRole to prevent a user from deleting away `NetworkPolicy`.
+== Setup group and users
 
-== Create a new ClusterRole
+Follow the instructions link:../rbac/README.adoc[here] first. 
+
+== Deploy pac man app
 [source, bash]
 ----
-$ oc create -f clusterRole-ns-admin.yaml
+$ oc create -f pacman.yaml 
+$ oc create -f pacman-networkpolicies.yaml 
+$ oc create -f paxcman-route.yaml
+
+$ oc create -f mongodb.yaml
+$ oc create -f mongo-networkpolicies.yaml
 ----
 
-== Disabling project self-provisioning
+== Test network policy
 
-Docs can be found https://docs.openshift.com/container-platform/4.6/applications/projects/configuring-project-creation.html#customizing-project-request-message_configuring-project-creation[here].
-
+Create another namespace
 [source, bash]
 ----
-$ oc patch clusterrolebinding.rbac self-provisioners -p '{"subjects": null}'
+$ oc new-project demo-http
+$ oc new-app https://github.com/sclorg/httpd-ex.git --name=httpd -n demo-http
+---
 
-# Edit to set rbac.authorization.kubernetes.io/autoupdate: "false"
-$ oc edit clusterrolebinding.rbac self-provisioners
-----
+Test from `pacman-dev-app` namespace to `pacman-dev-mongo` namespace. T
+$ oc rsh <pod> -n pacman-dev-app
+$ telnet to
 
-== Create a new group and add users
-[source, bash]
-----
-$ oc new-project pacman-dev
+Test ingress to `pacman-dev-app`
+$ curl http://
 
-$ oc adm groups new pacman-dev-users
-$ oc adm groups add-users pacman-dev-users user1
-$ oc adm groups add-users pacman-dev-users user2
-----
-
-== Create local role binding
-[source, bash]
-----
-$ oc create -f roleBindingNSAdmin.yaml
-----
-
-== RHPDS Project Request Template
-
-RHPS has a default project request template. You can modify them here:
-[source, bash]
-----
-$ oc edit project.config.openshift.io/cluster
-$ oc edit Template -n openshift-config
-----
- 
+Test pacman namespace to http namespace. 
+$ oc rsh
+curl http://http.demo-http.svc
+$ oc rsh
+curl http://http.demo-http.svc
