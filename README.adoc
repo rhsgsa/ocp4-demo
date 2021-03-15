@@ -14,4 +14,7 @@ This is a collection of demos for OpenShift 4.
 |Using NetworkPolicy
 |link:networkpolicy/README.adoc[networkpolicy]
 
+|Scaling with Cluster Autoscaler
+|link:clusterautoscaler/README.adoc[clusterautoscaler]
+
 |===

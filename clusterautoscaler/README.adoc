@@ -1,0 +1,61 @@
+
+== Setup Machine and Cluster Autoscaler
+
+[source, bash]
+----
+$ for MS in `oc get machinesets -n openshift-machine-api -o name | awk -F/ '{print $2}'`; 
+do 
+oc create -f - << EOF 
+apiVersion: autoscaling.openshift.io/v1beta1
+kind: MachineAutoscaler
+metadata:  
+  name: $MS
+  namespace: openshift-machine-api
+spec:
+  maxReplicas: 12
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: machine.openshift.io/v1beta1
+    kind: MachineSet
+    name: $MS
+EOF
+done
+
+$ oc create -f clusterautoscaler.yaml
+----
+
+== Create new project
+[source, bash]
+----
+$ oc new-project cluster-autoscaler-demo
+$ oc delete limitrange cluster-autoscaler-demo-core-resource-limits -n cluster-autoscaler-demo
+----
+
+== Deploy sample app and scale
+[source, bash]
+----
+$ oc new-app https://github.com/sclorg/nodejs-ex.git --name=nodejs
+----
+
+Modify the `nodejs` deployment to add resource `Request`:
+
+[source, yaml]
+----
+spec:
+  containers:
+  - image: image-registry.openshift-image-registry.svc:5000/cluster-autoscaler-demo/nodejs@sha256:2bf03060d14b7cc7deb29156ae6dedde382c2abfe91ad5a7a40f5db89d88e6f3
+    imagePullPolicy: IfNotPresent
+    name: nodejs
+    ports:
+    - containerPort: 8080
+        protocol: TCP
+    resources:
+      requests:
+        cpu: "4"
+        memory: 8Gi
+----
+
+[source, bash]
+----
+$ oc scale --replicas=20 deployment/nodejs
+----
