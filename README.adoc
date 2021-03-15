@@ -17,4 +17,7 @@ This is a collection of demos for OpenShift 4.
 |Scaling with Cluster Autoscaler
 |link:clusterautoscaler/README.adoc[clusterautoscaler]
 
+| RBAC demo
+| link:rbac/README.adoc[rbac]
+
 |===

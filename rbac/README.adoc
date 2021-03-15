@@ -1,0 +1,50 @@
+= Introduction
+
+This demonstrate the following concepts:
+ 
+* Custom `ClusterRole` to prevent deletion of `NetworkPolicy` and `Project` resources
+* Local role bindings
+* User grouping
+
+== Create a new ClusterRole
+[source, bash]
+----
+$ oc create -f clusterRole-ns-admin.yaml
+----
+
+== Disabling project self-provisioning
+
+Docs can be found https://docs.openshift.com/container-platform/4.6/applications/projects/configuring-project-creation.html#customizing-project-request-message_configuring-project-creation[here].
+
+[source, bash]
+----
+$ oc patch clusterrolebinding.rbac self-provisioners -p '{"subjects": null}'
+
+# Edit to set rbac.authorization.kubernetes.io/autoupdate: "false"
+$ oc edit clusterrolebinding.rbac self-provisioners
+----
+
+== Create new projects, groups and add users
+
+user1 and user2 will have `ns-admin` ClusterRole permissions to `pacman-dev-app` and `pacman-dev-mongo` namespaces
+
+[source, bash]
+----
+$ oc new-project pacman-dev-app
+$ oc new-project pacman-dev-mongo
+
+$ oc adm groups new pacman-dev-users
+$ oc adm groups add-users pacman-dev-users user1 user2
+
+$ oc create -f roleBindingNSAdmin.yaml -n pacman-dev-app
+$ oc create -f roleBindingNSAdmin.yaml -n pacman-dev-mongo
+----
+
+== RHPDS Project Request Template
+
+RHPS has a default project request template. You can modify them here:
+[source, bash]
+----
+$ oc edit project.config.openshift.io/cluster
+$ oc edit Template -n openshift-config
+----

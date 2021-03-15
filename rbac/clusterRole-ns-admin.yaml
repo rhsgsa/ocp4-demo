@@ -728,7 +728,7 @@ rules:
   resources:
   - projects
   verbs:
-  - delete
+  #- delete
   - get
 - apiGroups:
   - ""
@@ -770,10 +770,10 @@ rules:
   resources:
   - projects
   verbs:
-  - delete
+  #- delete
   - get
-  - patch
-  - update
+  #- patch
+  #- update
 - apiGroups:
   - ""
   - route.openshift.io
