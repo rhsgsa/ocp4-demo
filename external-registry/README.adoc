@@ -1,0 +1,76 @@
+= Introduction
+
+This creates a Nexus registry and configures OpenShift global pull secret.
+
+== Create Nexus 
+[source, bash]
+----
+$ oc new-project nexus-demo
+$ helm install nexus rhmlops/nexus -n nexus-demo \
+  --set sonatype-nexus.nexus.resources.requests.cpu=2 \
+  --set sonatype-nexus.nexus.resources.requests.memory=4Gi \
+  --set sonatype-nexus.persistence.storageSize=10Gi
+----
+
+Disable anonymous access
+[source, bash]
+----
+
+# Nexus docker hostname
+$ NEXUS_HOSTNAME=`oc get route nexus-docker -n nexus-demo -o jsonpath='{.spec.host}'`
+
+curl -u admin:admin123 -X PUT "https://$NEXUS_HOSTNAME/service/rest/beta/security/anonymous" -H "accept: application/json" -H "Content-Type: application/json" -d "{ \"enabled\" : false, \"userId\" : \"anonymous\", \"realmName\" : \"NexusAuthorizingRealm\"}"
+----
+
+== Add nexus credential to OpenShift
+From doc https://docs.openshift.com/container-platform/4.6/openshift_images/managing_images/using-image-pull-secrets.html[here].
+
+[source, bash]
+----
+$ oc get secret/pull-secret -n openshift-config -o jsonpath='{.data.\.dockerconfigjson}'  | base64 -d | jq > /tmp/secret.json
+
+
+# base64 of username:password for nexus
+$ echo -n 'admin:admin123' | base64
+YWRtaW46YWRtaW4xMjM=
+
+# Edit secret.json to add in nexus credential
+#"$NEXUS_HOSTNAME": {
+#  "auth": "YWRtaW46YWRtaW4xMjM="
+#},
+$ vi /tmp.secret.json 
+
+# MCO will reboot the nodes. 
+# Fixed in 4.7. https://docs.openshift.com/container-platform/4.7/release_notes/ocp-4-7-release-notes.html#ocp-4-7-mco-auto-reboot-triggers-removed
+$ oc set data secret/pull-secret -n openshift-config --from-file=.dockerconfigjson=/tmp/secret.json
+
+# Wait for all nodes to be updated
+$ oc get mcp
+----
+
+== Test nexus repo
+
+Copy a sample image to Nexus
+[source, bash]
+----
+$ podman login $NEXUS_HOSTNAME -u admin -p admin123
+$ skopeo copy docker://quay.io/kwkoo/webnotifications docker://$NEXUS_HOSTNAME/kwkoo/webnotifications
+
+# This will fail. Anonymous access has been disabled
+$ podman logout $NEXUS_HOSTNAME
+$ podman pull $NEXUS_HOSTNAME/kwkoo/webnotifications
+----
+
+Deploy the image on OpenShift
+[source, bash]
+----
+$ oc new-project nexus-test
+$ oc new-app $NEXUS_HOSTNAME/kwkoo/webnotifications -n nexus-test
+
+$ oc get deploy webnotifications
+NAME               READY   UP-TO-DATE   AVAILABLE   AGE
+webnotifications   1/1     1            1           2m53s
+
+$ oc get deploy webnotifications -o jsonpath='{.spec.template.spec.containers[0].image}'; echo
+nexus-docker-nexus-demo.apps.cluster-e513.e513.example.opentlc.com/kwkoo/webnotifications@sha256:6c422e546d26079ca74eed692cd1d7f7573210ad63ac56bd30ed9497c4769152
+----

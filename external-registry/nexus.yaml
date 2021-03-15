@@ -1,0 +1,33 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: nexus-docker
+  namespace: nexus-demo
+spec:
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
+      name: docker
+  selector:
+    app: sonatype-nexus
+  type: ClusterIP
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: nexus-docker
+  namespace: nexus-demo
+spec:
+  port:
+    targetPort: 5000
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+  to:
+    kind: Service
+    name: nexus-docker          
+    weight: 100
+  wildcardPolicy: None
+
