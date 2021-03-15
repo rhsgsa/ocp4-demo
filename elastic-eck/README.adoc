@@ -80,7 +80,7 @@ $ curl -XPUT --header 'Content-Type: application/json' https://elasticsearch-ela
 == Create Kibana 
 Wait for ES to be Ready before creating Kibana. If Kibana doesn't get into Ready state, restart the pod
 
-Username for Kibana is `elastic`. Password is $PASSWORD
+Username for Kibana is `elastic`. Password is `$PASSWORD`.
 
 [source, bash]
 ----

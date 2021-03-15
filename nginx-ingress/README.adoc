@@ -69,7 +69,7 @@ Deploy the app and test the app to ensure is using NGINX.
 ----
 $ oc create -f mnist.yaml
 
-$ $ curl -v http://mnist-draw.demo.ltsai.com/
+$ curl -v http://mnist-draw.demo.ltsai.com/
 *   Trying 54.179.123.120:80...
 * Connected to mnist-draw.demo.ltsai.com (54.179.123.120) port 80 (#0)
 > GET / HTTP/1.1
