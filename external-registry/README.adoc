@@ -12,13 +12,15 @@ $ helm install nexus rhmlops/nexus -n nexus-demo \
   --set sonatype-nexus.nexus.resources.requests.cpu=2 \
   --set sonatype-nexus.nexus.resources.requests.memory=4Gi \
   --set sonatype-nexus.persistence.storageSize=10Gi
+
+$ oc create -f nexus.yaml
 ----
 
 Disable anonymous access
 [source, bash]
 ----
 
-# Nexus docker hostname
+# Nexus hostname
 $ NEXUS_HOSTNAME=`oc get route nexus-docker -n nexus-demo -o jsonpath='{.spec.host}'`
 
 curl -u admin:admin123 -X PUT "https://$NEXUS_HOSTNAME/service/rest/beta/security/anonymous" -H "accept: application/json" -H "Content-Type: application/json" -d "{ \"enabled\" : false, \"userId\" : \"anonymous\", \"realmName\" : \"NexusAuthorizingRealm\"}"
@@ -30,7 +32,6 @@ From doc https://docs.openshift.com/container-platform/4.6/openshift_images/mana
 [source, bash]
 ----
 $ oc get secret/pull-secret -n openshift-config -o jsonpath='{.data.\.dockerconfigjson}'  | base64 -d | jq > /tmp/secret.json
-
 
 # base64 of username:password for nexus
 $ echo -n 'admin:admin123' | base64
