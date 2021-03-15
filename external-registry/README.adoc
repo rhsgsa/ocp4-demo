@@ -1,11 +1,13 @@
 = Introduction
 
-This creates a Nexus registry and configures OpenShift global pull secret.
+This creates a Nexus registry and configures OpenShift's global pull secret.
 
 == Create Nexus 
 [source, bash]
 ----
 $ oc new-project nexus-demo
+
+$ helm repo add rhmlops https://rh-mlops-workshop.github.io/helm-charts/
 $ helm install nexus rhmlops/nexus -n nexus-demo \
   --set sonatype-nexus.nexus.resources.requests.cpu=2 \
   --set sonatype-nexus.nexus.resources.requests.memory=4Gi \
