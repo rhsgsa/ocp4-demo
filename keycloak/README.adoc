@@ -42,7 +42,7 @@ This represents the situation we might find in a enterprise LDAP and is the star
 all users with a person's name have `admin` assigned as password.
 all users that start with `dev` have `dev` as password.
 
-## RH-SSO Installation
+## Keycloak Installation
 
 ```shell
 oc new-project keycloak-operator
@@ -51,7 +51,7 @@ oc apply -f ./keycloak/keycloak.yaml -n keycloak-operator
 oc create route reencrypt keycloak --port 8443 --service keycloak -n keycloak-operator
 ```
 
-## RH-SSO - LDAP Integration
+## Keycloak - LDAP Integration
 
 Wait for Red Hat SSO pod to be up and running first.
 
@@ -63,7 +63,7 @@ echo created ldap integration $ldap_integration_id
 cat ./keycloak/role-mapper.json | envsubst | oc exec -i -n keycloak-operator keycloak-0 -- /opt/jboss/keycloak/bin/kcadm.sh create components --config /tmp/kcadm.config -r ocp -f -
 ```
 
-After this step, if you should be able to login RH-SSO
+After this step, if you should be able to login Keycloak
 
 ```shell
 echo https://$(oc get route keycloak -n keycloak-operator -o jsonpath='{.spec.host}')
@@ -76,9 +76,9 @@ image::media/ldap-groups.png[LDAP Groups]
 
 It may take about 5 minutes for the groups to fully synchronize. Otherwise login to SSO and go to User Federation -> Ocp-ldap-provider -> synchronize all users.
 
-## RH-SSO Group Augmentation
+## Keycloak Group Augmentation
 
-In this section we emulate org owners that connect to RH-SSO and organizes their portion of the organization hierarchy by adding the dev team and application layers.
+In this section we emulate org owners that connect to Keycloak and organizes their portion of the organization hierarchy by adding the dev team and application layers.
 
 ```shell
 ./keycloak/group-config.sh
@@ -88,7 +88,7 @@ this command will take a while. After executing it, you should see the following
 
 image::media/augmented-groups.png[Augmented Groups]
 
-## OCP - RH-SSO integration
+## OCP - Keycloak integration
 
 ```shell
 export keycloak_route=$(oc get route keycloak -n keycloak-operator -o jsonpath='{.spec.host}')
@@ -104,7 +104,7 @@ export oauth_patch=$(cat ./ocp-auth/oauth.yaml | envsubst | yq eval -j)
 oc patch OAuth.config.openshift.io cluster -p '[{"op": "add", "path": "/spec/identityProviders/-", "value": '"${oauth_patch}"' }]' --type json
 ```
 
-## OCP - RH-SSO Group Sync
+## OCP - Keycloak Group Sync
 
 ### Deploy the group sync operator
 
