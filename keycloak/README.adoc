@@ -40,7 +40,7 @@ with "cn=admin,dc=example,dc=com"/admin credentials.
 
 If data has been loaded correctly you should see this situation:
 
-![LDAP Groups](/media/ldap-setup.png)
+image:media/ldap-setup.png[LDAP Groups]
 
 This represents the situation we might find in a enterprise LDAP and is the starting point of our demo.
 
