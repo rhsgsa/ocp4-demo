@@ -1,6 +1,6 @@
 = Credit
 
-The original content is from https://github.com/raffaelespazzoli/orgs-management-ocp[raffaelespazzoli]
+The original content is from https://github.com/raffaelespazzoli/orgs-management-ocp[raffaelespazzoli] and https://www.openshift.com/blog/orgs-management-and-team-onboarding-in-openshift-a-fully-automated-approach[blog].
 
 # Known Issue
 
@@ -63,7 +63,7 @@ echo created ldap integration $ldap_integration_id
 cat ./keycloak/role-mapper.json | envsubst | oc exec -i -n keycloak-operator keycloak-0 -- /opt/jboss/keycloak/bin/kcadm.sh create components --config /tmp/kcadm.config -r ocp -f -
 ```
 
-After this step, if you should be able to login Keycloak
+After this step, you should be able to login Keycloak
 
 ```shell
 echo https://$(oc get route keycloak -n keycloak-operator -o jsonpath='{.spec.host}')
@@ -96,6 +96,7 @@ export auth_callback=$(oc get route oauth-openshift -n openshift-authentication 
 cat ./ocp-auth/keycloak-client.yaml | envsubst | oc apply -f - -n keycloak-operator
 oc apply -f ./ocp-auth/secret.yaml
 
+# This assumes RHPDS with Let's Encrypt. Modify accordingly. 
 ca_secret=$(oc get ingresscontroller.operator default -n openshift-ingress-operator -o jsonpath='{.spec.defaultCertificate.name}')
 oc get secrets -n openshift-ingress $ca_secret -o jsonpath='{.data.tls\.crt}' | base64 -d > /tmp/ca.crt
 oc -n openshift-config create configmap ocp-ca-bundle --from-file=/tmp/ca.crt

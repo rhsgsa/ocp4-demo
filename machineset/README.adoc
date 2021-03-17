@@ -8,6 +8,7 @@ This creates an infra node machineset. OpenShift doc is https://docs.openshift.c
 ----
 # Existing Cluster ID
 $ oc get -o jsonpath='{.status.infrastructureName}{"\n"}' infrastructure cluster
+
 $ oc get  <name> -o yaml -n openshift-machine-api > /tmp/ms.yaml
 
 # Add Infra label and replica count. An example:
