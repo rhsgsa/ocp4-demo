@@ -1,6 +1,6 @@
 = Credit
 
-The original content is from raffaelespazzoli[https://github.com/raffaelespazzoli/orgs-management-ocp]
+The original content is from https://github.com/raffaelespazzoli/orgs-management-ocp[raffaelespazzoli]
 
 Changes made:
 
@@ -77,7 +77,7 @@ echo admin/${admin_password}
 
 and you should see the following groups
 
-![LDAP Groups](/media/ldap-groups.png)
+image::/media/ldap-groups.png[LDAP Groups]
 
 It may take about 5 minutes for the groups to fully synchronize. Otherwise login to SSO and go to User Federation -> Ocp-ldap-provider -> synchronize all users.
 
@@ -91,7 +91,7 @@ In this section we emulate org owners that connect to RH-SSO and organizes their
 
 this command will take a while. After executing it, you should see the following:
 
-![Augmented Groups](/media/augmented-groups.png)
+image::/media/augmented-groups.png[Augmented Groups]
 
 ## OCP - RH-SSO integration
 
