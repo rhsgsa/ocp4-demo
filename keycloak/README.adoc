@@ -9,7 +9,7 @@ Changes made:
 
 # Known Issue
 
-* ldap admin UI is not working
+* PHP LDAP admin UI is not working
 
 # Team Onboarding Demo for OpenShift
 
@@ -77,7 +77,7 @@ echo admin/${admin_password}
 
 and you should see the following groups
 
-image::/media/ldap-groups.png[LDAP Groups]
+image::media/ldap-groups.png[LDAP Groups]
 
 It may take about 5 minutes for the groups to fully synchronize. Otherwise login to SSO and go to User Federation -> Ocp-ldap-provider -> synchronize all users.
 
@@ -91,7 +91,7 @@ In this section we emulate org owners that connect to RH-SSO and organizes their
 
 this command will take a while. After executing it, you should see the following:
 
-image::/media/augmented-groups.png[Augmented Groups]
+image::media/augmented-groups.png[Augmented Groups]
 
 ## OCP - RH-SSO integration
 
