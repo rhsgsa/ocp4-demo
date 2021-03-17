@@ -1,15 +1,11 @@
 
 = Introduction
 
-This demonstrates the usage of network policy between the app and mongo database only. External ingress is only allowed to pacman app via the ingress controller.
+This demonstrates the usage of network policy between the Pac-Man app and mongo database. External ingress is only allowed to pacman app via the ingress controller.
 
+1. Pacman app only allows from ingress controller
+2. Mongo db only allows ingress from pacman app
 
-1. Pacman app only allow from ingress controller
-2. Mongo db only allow ingress from pacman app
-
-[11:07, 17/03/2021] Liming:  curl http://mongo.pacman-dev-mongo.svc:27017 
-$ curl http://pacman.pacman-dev-app.svc:8080  <== External route will work
-[11:08, 17/03/2021] Darrick Leong: ok will try
 
 == Setup group and users
 
