@@ -48,12 +48,12 @@ You can curl to the various service endpoints to test the policies.
 [source, bash]
 ----
 # Should be denied from all namespace within the cluster
-$ curl -s http://pacman.pacman-dev-app.svc:8080
+$ curl http://pacman.pacman-dev-app.svc:8080
 
 # Should work from externally and from any namespace within the cluster
 $ PACMAN_ROUTE=`oc get route pacman -n pacman-dev-app  -o jsonpath='{.spec.host}'`
 $ curl https://$PACMAN_ROUTE 
 
 # Should only be allowed from the pacman-dev-app namespace
-$ curl -s http://mongo.pacman-dev-mongo.svc:27017
+$ curl http://mongo.pacman-dev-mongo.svc:27017
 ----
