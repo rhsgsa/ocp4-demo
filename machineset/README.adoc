@@ -1,0 +1,45 @@
+= Introduction
+
+This creates an infra node machineset. OpenShift doc is https://docs.openshift.com/container-platform/4.7/machine_management/creating-infrastructure-machinesets.html[here].
+
+== Clone an existing machineset
+
+[source, bash]
+----
+# Existing Cluster ID
+$ oc get -o jsonpath='{.status.infrastructureName}{"\n"}' infrastructure cluster
+$ oc get  <name> -o yaml -n openshift-machine-api > /tmp/ms.yaml
+
+# Add Infra label and replica count. An example:
+#
+# apiVersion: machine.openshift.io/v1beta1
+# kind: MachineSet
+# metadata:
+#   name: cluster-xxx-xxx-infra-ap-southeast-1a
+#   namespace: openshift-machine-api
+#   labels:
+#     machine.openshift.io/cluster-api-cluster: cluster-xxx-xxx
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       machine.openshift.io/cluster-api-cluster: cluster-xxx-xxx
+#       machine.openshift.io/cluster-api-machineset: cluster-xxx-xxx-infra-ap-southeast-1a
+#   template:
+#     metadata:
+#       labels:
+#         machine.openshift.io/cluster-api-cluster: cluster-xxx-xxx
+#         machine.openshift.io/cluster-api-machine-role: worker
+#         machine.openshift.io/cluster-api-machine-type: worker
+#         machine.openshift.io/cluster-api-machineset: cluster-xxx-xxx-infra-ap-southeast-1a
+#     spec:
+#       metadata:
+#         labels:
+#           node-role.kubernetes.io/infra: "" 
+$ vi /tmp/ms.yaml
+$ oc create -f /tmp/ms.yaml
+
+$ oc get machineset cluster-xxx-xxx-infra-ap-southeast-1a -n openshift-machine-api
+NAME                                       DESIRED   CURRENT   READY   AVAILABLE   AGE
+cluster-xxx-xxx-infra-ap-southeast-1a   1         1         1       1           11m
+----

@@ -25,4 +25,7 @@ This is a collection of demos for OpenShift 4.
 
 | KeyCloak for OpenShift authentication with an OpenLDAP Identity Provider
 | link:keycloak/README.adoc[keycloak]
+
+| Adding a Machineset for Infra nodes
+| link:machineset/README.adoc[machineset]
 |===
