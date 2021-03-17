@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: pacman
+    app.kubernetes.io/name: pacman
+  name: pacman
+  namespace: pacman-dev-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: pacman
+      app.kubernetes.io/name: pacman
+  template:
+    metadata:
+      labels:
+        name: pacman
+        app.kubernetes.io/name: pacman
+    spec:
+      #hostNetwork: true
+      containers:
+      - image: quay.io/jpacker/nodejs-pacman-app:green
+        env:
+        - name: MONGO_SERVICE_HOST
+          value: mongo.pacman-dev-mongo.svc
+        - name: MY_MONGO_PORT
+          value: "27017"
+        name: pacman
+        ports:
+        - containerPort: 8080
+          name: http-server
