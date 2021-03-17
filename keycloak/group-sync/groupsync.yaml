@@ -1,0 +1,17 @@
+apiVersion: redhatcop.redhat.io/v1alpha1
+kind: GroupSync
+metadata:
+  name: keycloak-groupsync
+  namespace: group-sync-operator
+spec:
+  providers:
+    - name: keycloak
+      syncPeriodMinutes: "0 5 * * *"
+      keycloak:
+        insecure: true
+        realm: ocp
+        url: https://${keycloak_route}
+        credentialsSecret:
+          name: keycloak-group-sync
+          namespace: group-sync-operator
+        

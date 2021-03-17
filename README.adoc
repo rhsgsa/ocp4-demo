@@ -23,4 +23,6 @@ This is a collection of demos for OpenShift 4.
 | Using an external image registry
 | link:external-registry/README.adoc[external-registry]
 
+| KeyCloak for OpenShift authentication with an OpenLDAP Identity Provider
+| link:keycloak/README.adoc[keycloak]
 |===
