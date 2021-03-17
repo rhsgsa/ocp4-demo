@@ -7,6 +7,8 @@ This creates a Nexus registry and configures OpenShift's global pull secret.
 ----
 $ oc new-project nexus-demo
 
+$ oc delete limitrange nexus-demo-core-resource-limits -n nexus-demo
+
 $ helm repo add rhmlops https://rh-mlops-workshop.github.io/helm-charts/
 $ helm install nexus rhmlops/nexus -n nexus-demo \
   --set sonatype-nexus.nexus.resources.requests.cpu=2 \
@@ -23,11 +25,11 @@ Disable anonymous access
 # Nexus hostname
 $ NEXUS_HOSTNAME=`oc get route nexus-docker -n nexus-demo -o jsonpath='{.spec.host}'`
 
-curl -u admin:admin123 -X PUT "https://$NEXUS_HOSTNAME/service/rest/beta/security/anonymous" -H "accept: application/json" -H "Content-Type: application/json" -d "{ \"enabled\" : false, \"userId\" : \"anonymous\", \"realmName\" : \"NexusAuthorizingRealm\"}"
+$ curl -u admin:admin123 -X PUT "https://$NEXUS_HOSTNAME/service/rest/beta/security/anonymous" -H "accept: application/json" -H "Content-Type: application/json" -d "{ \"enabled\" : false, \"userId\" : \"anonymous\", \"realmName\" : \"NexusAuthorizingRealm\"}"
 ----
 
 == Add nexus credential to OpenShift
-From doc https://docs.openshift.com/container-platform/4.6/openshift_images/managing_images/using-image-pull-secrets.html[here].
+OpenShift doc can be found https://docs.openshift.com/container-platform/4.6/openshift_images/managing_images/using-image-pull-secrets.html[here].
 
 [source, bash]
 ----

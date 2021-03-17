@@ -7,6 +7,9 @@ This demonstrate the following concepts:
 * User grouping
 
 == Create a new ClusterRole
+
+This is modified from the default `admin` ClusterRole.
+
 [source, bash]
 ----
 $ oc create -f clusterRole-ns-admin.yaml
@@ -14,7 +17,7 @@ $ oc create -f clusterRole-ns-admin.yaml
 
 == Disabling project self-provisioning
 
-Docs can be found https://docs.openshift.com/container-platform/4.6/applications/projects/configuring-project-creation.html#customizing-project-request-message_configuring-project-creation[here].
+OpenShift doc can be found https://docs.openshift.com/container-platform/4.6/applications/projects/configuring-project-creation.html#customizing-project-request-message_configuring-project-creation[here].
 
 [source, bash]
 ----
