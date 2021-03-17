@@ -1,0 +1,32 @@
+
+= Introduction
+
+This demonstrates the usage of node labeling and contorl certain type of PODs scheduled on them
+
+== Create new project nodelabel-demo
+[source, bash]
+----
+$ oc new-project nodelabel-demo
+----
+
+== Create new httpd app and expose the service httpd
+[source, bash]
+----
+$ oc new-app centos/httpd-24-centos7~https://github.com/sclorg/httpd-ex --name=httpd
+$ oc expose service httpd
+----
+== scale httpd pods
+oc adm dc httpd scale --replicas=10 
+
+== Edit or patch Deployment spec.template.spec with the respective nodeSelector
+[source, yaml]
+----
+spec:
+  nodeSelector:
+    topology.kubernetes.io/zone: ap-southeast-1c
+----
+
+[source, bash]
+---
+$ oc patch dc httpd --type='json' -p='[{"op":"add","path":"/spec/template/spec/nodeSelector","value":{"topology.kubernetes.io/zone":"ap-southeast-1c"}}]'
+---
