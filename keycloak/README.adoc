@@ -2,11 +2,6 @@
 
 The original content is from https://github.com/raffaelespazzoli/orgs-management-ocp[raffaelespazzoli]
 
-Changes made:
-
-* Using Red Hat SSO
-* Update instructions 
-
 # Known Issue
 
 * PHP LDAP admin UI is not working
@@ -15,8 +10,8 @@ Changes made:
 
 This demo helps to setup KeyCloak as an OpenID Connect identity for OpenShift. KeyCloak is using OpenLDAP as an identity provider. 
 
-1. Mapping of the corporate organization to OpenShift RBAC model. This is going to be addressed with [RH-SSO]() in this demo.
-2. synchronization of groups. This is going to be addressed with the [group-sync-operator]() in this demo.
+1. Mapping of the corporate organization to OpenShift RBAC model. 
+2. synchronization of groups. This is going to be addressed with the group-sync-operator in this demo.
 
 ## Demo Scenario
 
