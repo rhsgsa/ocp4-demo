@@ -43,6 +43,21 @@ $ oc create -f roleBindingNSAdmin.yaml -n pacman-dev-app
 $ oc create -f roleBindingNSAdmin.yaml -n pacman-dev-mongo
 ----
 
+== Test as user1
+
+[source, bash]
+----
+$ oc whoami
+user1
+
+# The message return is from Project Request template
+$ oc new-project access-denied
+Error from server (Forbidden): To provision Projects you must request access in https://labs.opentlc.com or https://rhpds.redhat.com
+
+$ oc new-app httpd~https://github.com/sclorg/httpd-ex.git --name=http -n pacman-dev-app
+$ oc delete all --selector app=http -n pacman-dev-app
+----
+
 == RHPDS Project Request Template
 
 RHPS has a default project request template. You can modify them here:
