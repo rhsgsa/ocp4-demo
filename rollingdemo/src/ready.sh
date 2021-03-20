@@ -1,0 +1,10 @@
+#!/bin/bash
+
+READY_FILE_SLEEP_DURATION="${READY_FILE_SLEEP_DURATION:-0}"
+READY_FILE="${READY_FILE:-/tmp/ready}"
+
+echo "Sleeping for $READY_FILE_SLEEP_DURATION"
+echo "Ready file is $READY_FILE"
+
+sleep $READY_FILE_SLEEP_DURATION
+touch $READY_FILE
