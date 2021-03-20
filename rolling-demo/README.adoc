@@ -29,6 +29,13 @@ This will delay readiness by about 10 seconds.
 $ oc set env deploy flask READY_FILE_SLEEP_DURATION=10 -n rolling-demo
 ----
 
+== Scale to 10 pods
+
+[source, bash]
+----
+$  oc scale --replicas=10 deploy flask -n rolling-demo
+----
+
 == Configure rollingUpdate strategy
 
 - `maxUnavailable` is an optional field that specifies the maximum number of Pods that can be unavailable during the update process. 
@@ -41,13 +48,6 @@ Will configure maxSurge=1 and maxUnavailable=0, so that 1 pod has to be Ready st
 $ oc patch deploy flask -p '{"spec":{"strategy":{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0}}}}' -n rolling-demo
 ----
 
-== Scale to 10 pods
-
-[source, bash]
-----
-$  oc scale --replicas=10 deploy flask -n rolling-demo
-----
-
 == Start a new build
 
 Wait for all 10 pods to be deployed before starting a new build.
@@ -55,6 +55,7 @@ Wait for all 10 pods to be deployed before starting a new build.
 [source, bash]
 ----
 $ oc start-build flask --follow -n rolling-demo
+$ watch 'oc get pods -n rolling-demo | grep -v build'
 ----
 
 Once the build finish and begin to deploy, you can  observe 1 pod is starting and waits for it to be in Ready state before an old pod gets terminated.
