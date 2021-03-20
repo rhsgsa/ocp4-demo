@@ -1,0 +1,60 @@
+= Introduction
+
+This demonstrates the rolling update capability of Kubernetes by:
+
+1. Artificially delay the readiness probe
+2. Configure the `rollingUpdate` strategy to start 1 pod at a time. 
+
+== Create Flask app
+
+[source, bash]
+----
+$ oc new-project rolling-demo
+$ oc new-app python:latest~https://github.com/rhsgsa/ocp4-demo.git --context-dir=rolling-demo/src --name=flask -n rolling-demo
+
+$ oc expose svc/flask
+
+# Configure probes
+$ oc set probe deploy flask --readiness --get-url=http://:8080/healthz/ready --period-seconds=2 -n rolling-demo
+
+$ oc set probe deploy flask --liveness --get-url=http://:8080/healthz/live --period-seconds=2 -n rolling-demo
+----
+
+== Configure delay for readiness
+
+This will delay readiness by about 10 seconds.
+
+[source, bash]
+----
+$ oc set env deploy flask READY_FILE_SLEEP_DURATION=10 -n rolling-demo
+----
+
+== Configure rollingUpdate strategy
+
+- `maxUnavailable` is an optional field that specifies the maximum number of Pods that can be unavailable during the update process. 
+- `maxSurge` is an optional field that specifies the maximum number of Pods that can be created over the desired number of Pods.
+
+Will configure maxSurge=1 and maxUnavailable=0, so that 1 pod has to be Ready state before an existing pod can be terminated. 
+
+[source, bash]
+----
+$ oc patch deploy flask -p '{"spec":{"strategy":{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0}}}}' -n rolling-demo
+----
+
+== Scale to 10 pods
+
+[source, bash]
+----
+$  oc scale --replicas=10 deploy flask -n rolling-demo
+----
+
+== Start a new build
+
+Wait for all 10 pods to be deployed before starting a new build.
+
+[source, bash]
+----
+$ oc start-build flask --follow -n rolling-demo
+----
+
+Once the build finish and begin to deploy, you can  observe 1 pod is starting and waits for it to be in Ready state before an old pod gets terminated.

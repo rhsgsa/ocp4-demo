@@ -28,4 +28,8 @@ This is a collection of demos for OpenShift 4.
 
 | Adding a Machineset for Infra nodes
 | link:machineset/README.adoc[machineset]
+
+| Rolling deployment
+| link:rolling-demo/README.adoc[rolling-demo]
+
 |===
