@@ -32,4 +32,7 @@ This is a collection of demos for OpenShift 4.
 | Rolling deployment
 | link:rolling-demo/README.adoc[rolling-demo]
 
+| Using nodeSelector
+| link:nodelabel/README.adoc[nodelabel]
+
 |===

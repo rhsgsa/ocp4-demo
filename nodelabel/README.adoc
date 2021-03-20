@@ -15,18 +15,27 @@ $ oc new-project nodelabel-demo
 $ oc new-app centos/httpd-24-centos7~https://github.com/sclorg/httpd-ex --name=httpd
 $ oc expose service httpd
 ----
+
 == scale httpd pods
-oc adm dc httpd scale --replicas=10 
+
+[source, bash]
+----
+$ oc scale --replicas=10 deploy httpd 
+----
 
 == Edit or patch Deployment spec.template.spec with the respective nodeSelector
+
 [source, yaml]
 ----
 spec:
   nodeSelector:
-    topology.kubernetes.io/zone: ap-southeast-1c
+    topology.kubernetes.io/zone: ap-southeast-1a
 ----
 
 [source, bash]
----
-$ oc patch dc httpd --type='json' -p='[{"op":"add","path":"/spec/template/spec/nodeSelector","value":{"topology.kubernetes.io/zone":"ap-southeast-1c"}}]'
----
+----
+$ oc patch dc httpd --type='json' -p='[{"op":"add","path":"/spec/template/spec/nodeSelector","value":{"topology.kubernetes.io/zone":"ap-southeast-1a"}}]'
+
+# Observe that pods are started to nodes on ap-southeast-1a
+$ watch 'oc get pods -o wide'
+----
