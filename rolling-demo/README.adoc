@@ -10,13 +10,13 @@ This demonstrates the rolling update capability of Kubernetes by:
 [source, bash]
 ----
 $ oc new-project rolling-demo
+
 $ oc new-app python:latest~https://github.com/rhsgsa/ocp4-demo.git --context-dir=rolling-demo/src --name=flask -n rolling-demo
 
 $ oc expose svc/flask
 
 # Configure probes
 $ oc set probe deploy flask --readiness --get-url=http://:8080/healthz/ready --period-seconds=2 -n rolling-demo
-
 $ oc set probe deploy flask --liveness --get-url=http://:8080/healthz/live --period-seconds=2 -n rolling-demo
 ----
 
