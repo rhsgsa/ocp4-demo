@@ -1,0 +1,28 @@
+= Introduction
+
+We will move the registry pods to Infra nodes with the label `node-role.kubernetes.io/infra`.
+
+== Move registry to infra nodes
+
+[source, bash]
+----
+$ oc patch configs.imageregistry.operator.openshift.io/cluster -p '{"spec":{"nodeSelector":{"node-role.kubernetes.io/infra":""}}}' --type=merge
+----
+
+== Check registry pods have moved to infra nodes
+
+[source, bash]
+----
+$ oc get nodes -l node-role.kubernetes.io/infra
+NAME                                              STATUS   ROLES          AGE   VERSION
+ip-10-0-205-120.ap-southeast-1.compute.internal   Ready    infra,worker   10h   v1.20.0+ba45583
+ip-10-0-219-236.ap-southeast-1.compute.internal   Ready    infra,worker   10h   v1.20.0+ba45583
+
+$ oc get pods -n openshift-image-registry -o wide | grep image-registry
+image-registry-65f9b65457-5l6cn                    1/1     Running   0          34s   10.128.4.6     ip-10-0-219-236.ap-southeast-1.compute.internal   <none>           <none>
+image-registry-65f9b65457-svwlk                    1/1     Running   0          29s   10.131.2.9     ip-10-0-205-120.ap-southeast-1.compute.internal   <none>           <none>
+----
+
+== PVC setup
+
+PVC for the image registry can be configured https://docs.openshift.com/container-platform/4.7/registry/configuring_registry_storage/configuring-registry-storage-vsphere.html[here].

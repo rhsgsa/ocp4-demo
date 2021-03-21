@@ -35,4 +35,7 @@ This is a collection of demos for OpenShift 4.
 | Using nodeSelector
 | link:nodelabel/README.adoc[nodelabel]
 
+| Move registry to infra nodes
+| link:image-registry/README.adoc[image-registry]
+
 |===
