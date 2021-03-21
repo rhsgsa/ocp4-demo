@@ -1,0 +1,46 @@
+= Introduction
+
+We will move OpenShift monitoring stack to the infra ndoes.
+
+== Create config map
+
+Create the cluster-monitoring-config to define the `nodeSelector`.
+
+[source, bash]
+----
+$ oc create -f cluster-monitoring-config.yaml 
+----
+
+== View the pods
+
+[source, bash]
+----
+$ oc get nodes -l node-role.kubernetes.io/infra
+NAME                                              STATUS   ROLES          AGE   VERSION
+ip-10-0-205-120.ap-southeast-1.compute.internal   Ready    infra,worker   10h   v1.20.0+ba45583
+ip-10-0-219-236.ap-southeast-1.compute.internal   Ready    infra,worker   10h   v1.20.0+ba45583
+
+$ oc get pods -n openshift-monitoring -o wide
+----
+
+== Configuring PVC
+
+OpenShift doc can be found https://docs.openshift.com/container-platform/4.7/monitoring/configuring-the-monitoring-stack.html#configuring-persistent-storage[here].
+
+[source, yaml]
+----
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cluster-monitoring-config
+  namespace: openshift-monitoring
+data:
+  config.yaml: |
+    <component>:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: <storage_class>
+          resources:
+            requests:
+              storage: <amount_of_storage>
+----

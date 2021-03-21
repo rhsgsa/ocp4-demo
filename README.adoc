@@ -38,4 +38,7 @@ This is a collection of demos for OpenShift 4.
 | Move registry to infra nodes
 | link:image-registry/README.adoc[image-registry]
 
+| Move monitoring to infra nodes
+| link:monitoring/README.adoc[monitoring]
+
 |===
