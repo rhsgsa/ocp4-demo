@@ -41,7 +41,7 @@ $  oc scale --replicas=10 deploy flask -n rolling-demo
 - `maxUnavailable` is an optional field that specifies the maximum number of Pods that can be unavailable during the update process. 
 - `maxSurge` is an optional field that specifies the maximum number of Pods that can be created over the desired number of Pods.
 
-Will configure maxSurge=1 and maxUnavailable=0, so that 1 pod has to be Ready state before an existing pod can be terminated. 
+We will configure `maxSurge=1` and `maxUnavailable=0`, so that 1 pod has to be Ready state before an existing pod can be terminated. 
 
 [source, bash]
 ----
