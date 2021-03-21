@@ -1,0 +1,31 @@
+= Introduction
+
+This demo assume OpenShift is on AWS and creates service of type `LoadBalancer`.
+
+== Setup
+
+[source, bash]
+----
+$ oc new-project loadbalancer-demo
+
+$ oc new-app centos/httpd-24-centos7~https://github.com/sclorg/httpd-ex --name=httpd 
+
+$ oc create -f lb-service.yaml 
+
+$ oc get svc
+----
+
+== View the loadbalancer hostname
+
+[source, bash]
+----
+$ oc get svc http-loadbalancer -n loadbalancer-demo -o jsonpath='{.status.loadBalancer.ingress[0].hostname}' ; echo
+----
+
+== Curl the endpoint
+
+[source, bash]
+----
+$ LB_HOSTNAME=$(oc get svc http-loadbalancer -n loadbalancer-demo -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+$ curl -v http://$LB_HOSTNAME:8080
+----

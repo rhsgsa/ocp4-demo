@@ -1,0 +1,22 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: http-loadbalancer
+  namespace: loadbalancer-demo
+  labels:
+    app: httpd
+    app.kubernetes.io/component: httpd
+    app.kubernetes.io/instance: httpd
+spec:
+  ports:
+    - name: 8080-tcp
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+    - name: 8443-tcp
+      protocol: TCP
+      port: 8443
+      targetPort: 8443
+  selector:
+    deployment: httpd
+  type: LoadBalancer

@@ -41,4 +41,6 @@ This is a collection of demos for OpenShift 4.
 | Move monitoring to infra nodes
 | link:monitoring/README.adoc[monitoring]
 
+| LoadBalancer Service
+| link:lb-service-type/README.adoc[lb-service-type]
 |===
