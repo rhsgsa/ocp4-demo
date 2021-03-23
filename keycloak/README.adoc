@@ -153,3 +153,8 @@ online-banking-login-svc                     dev1
 online-banking-money-transfer-svc            dev5
 online-svc-team                              dev5, dev4, dev2, dev3, dev1
 ```
+
+# Notes
+
+* There are no projects created for the users 
+* Users will not be create any project if the link:../rbac/README.adoc[rbac] demo was ran earlier. 
