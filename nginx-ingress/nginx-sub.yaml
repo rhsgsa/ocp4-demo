@@ -9,5 +9,5 @@ spec:
   name: nginx-ingress-operator
   source: certified-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: nginx-ingress-operator.v0.1.0
+  startingCSV: nginx-ingress-operator.v0.0.7
 
