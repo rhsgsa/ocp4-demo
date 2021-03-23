@@ -7,7 +7,6 @@ spec:
   ingressClass: nginx
   serviceType: LoadBalancer
   nginxPlus: false
-  enableCRDs: false
   type: deployment
   image:
     pullPolicy: Always
