@@ -44,7 +44,7 @@ YWRtaW46YWRtaW4xMjM=
 #"$NEXUS_DOCKER_HOSTNAME": {
 #  "auth": "YWRtaW46YWRtaW4xMjM="
 #},
-$ vi /tmp.secret.json 
+$ vi /tmp/secret.json 
 
 # MCO will reboot the nodes. 
 # Fixed in 4.7. https://docs.openshift.com/container-platform/4.7/release_notes/ocp-4-7-release-notes.html#ocp-4-7-mco-auto-reboot-triggers-removed
