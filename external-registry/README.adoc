@@ -23,7 +23,8 @@ Disable anonymous access
 ----
 
 # Nexus hostname
-$ NEXUS_HOSTNAME=`oc get route nexus-docker -n nexus-demo -o jsonpath='{.spec.host}'`
+$ NEXUS_HOSTNAME=`oc get route nexus -n nexus-demo -o jsonpath='{.spec.host}'`
+$ NEXUS_DOCKER_HOSTNAME=`oc get route nexus-docker -n nexus-demo -o jsonpath='{.spec.host}'`
 
 $ curl -u admin:admin123 -X PUT "https://$NEXUS_HOSTNAME/service/rest/beta/security/anonymous" -H "accept: application/json" -H "Content-Type: application/json" -d "{ \"enabled\" : false, \"userId\" : \"anonymous\", \"realmName\" : \"NexusAuthorizingRealm\"}"
 ----
@@ -40,7 +41,7 @@ $ echo -n 'admin:admin123' | base64
 YWRtaW46YWRtaW4xMjM=
 
 # Edit secret.json to add in nexus credential
-#"$NEXUS_HOSTNAME": {
+#"$NEXUS_DOCKER_HOSTNAME": {
 #  "auth": "YWRtaW46YWRtaW4xMjM="
 #},
 $ vi /tmp.secret.json 
@@ -58,19 +59,19 @@ $ oc get mcp
 Copy a sample image to Nexus
 [source, bash]
 ----
-$ podman login $NEXUS_HOSTNAME -u admin -p admin123
-$ skopeo copy docker://quay.io/kwkoo/webnotifications docker://$NEXUS_HOSTNAME/kwkoo/webnotifications
+$ podman login $NEXUS_DOCKER_HOSTNAME -u admin -p admin123
+$ skopeo copy docker://quay.io/kwkoo/webnotifications docker://$NEXUS_DOCKER_HOSTNAME/kwkoo/webnotifications
 
 # This will fail. Anonymous access has been disabled
-$ podman logout $NEXUS_HOSTNAME
-$ podman pull $NEXUS_HOSTNAME/kwkoo/webnotifications
+$ podman logout $NEXUS_DOCKER_HOSTNAME
+$ podman pull $NEXUS_DOCKER_HOSTNAME/kwkoo/webnotifications
 ----
 
 Deploy the image on OpenShift
 [source, bash]
 ----
 $ oc new-project nexus-test
-$ oc new-app $NEXUS_HOSTNAME/kwkoo/webnotifications -n nexus-test
+$ oc new-app $NEXUS_DOCKER_HOSTNAME/kwkoo/webnotifications -n nexus-test
 
 $ oc get deploy webnotifications
 NAME               READY   UP-TO-DATE   AVAILABLE   AGE
