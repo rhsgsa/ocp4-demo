@@ -34,7 +34,7 @@ spec:
 
 [source, bash]
 ----
-$ oc patch dc httpd --type='json' -p='[{"op":"add","path":"/spec/template/spec/nodeSelector","value":{"topology.kubernetes.io/zone":"ap-southeast-1a"}}]'
+$ oc patch deployment httpd --type='json' -p='[{"op":"add","path":"/spec/template/spec/nodeSelector","value":{"topology.kubernetes.io/zone":"ap-southeast-1a"}}]'
 
 # Observe that pods are started to nodes on ap-southeast-1a
 $ watch 'oc get pods -o wide'
