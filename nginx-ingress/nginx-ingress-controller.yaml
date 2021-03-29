@@ -8,7 +8,9 @@ spec:
   serviceType: LoadBalancer
   nginxPlus: false
   type: deployment
+  enableCRDs: false
   image:
     pullPolicy: Always
     repository: docker.io/nginx/nginx-ingress
-    tag: 1.10.0-ubi
+    tag: 1.9.1-ubi
+  replicas: 1
