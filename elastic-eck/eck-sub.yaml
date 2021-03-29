@@ -9,4 +9,4 @@ spec:
   name: elasticsearch-eck-operator-certified
   source: certified-operators
   sourceNamespace: openshift-marketplace
-  startingCSV: elasticsearch-eck-operator-certified.v1.4.0
+  startingCSV: elasticsearch-eck-operator-certified.v1.5.0
