@@ -1,14 +1,12 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-from-openshift-ingress
+  name: deny-from-other-namespaces-except-web
   namespace: pacman-dev-app
 spec:
+  podSelector: {}
   ingress:
   - from:
-    - namespaceSelector:
+     - namespaceSelector:
         matchLabels:
-          network.openshift.io/policy-group: ingress
-  podSelector: {}
-  policyTypes:
-  - Ingress
+          name: pacman-dev-web

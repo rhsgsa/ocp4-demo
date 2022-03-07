@@ -15,6 +15,7 @@ And label the namespaces:
 
 [source, bash]
 ----
+oc label namespace pacman-dev-web name=pacman-dev-web
 oc label namespace pacman-dev-app name=pacman-dev-app
 oc label namespace pacman-dev-mongo name=pacman-dev-mongo
 ----
@@ -22,8 +23,9 @@ oc label namespace pacman-dev-mongo name=pacman-dev-mongo
 Wipe away default `NetworkPolicy` set by RHPDS:
 [source, bash]
 ----
-$ oc delete networkpolicies --all -n pacman-dev-mongo
+$ oc delete networkpolicies --all -n pacman-dev-web
 $ oc delete networkpolicies --all -n pacman-dev-app
+$ oc delete networkpolicies --all -n pacman-dev-mongo
 ----
 
 == Deploy Pac-Man app
@@ -31,6 +33,7 @@ $ oc delete networkpolicies --all -n pacman-dev-app
 ----
 oc apply -f ./mongodb -n pacman-dev-mongo
 oc apply -f ./pacman-app -n pacman-dev-app
+oc apply -f ./nginx -n pacman-dev-web
 ----
 
 == Deploy a http app into a third namespace.
@@ -51,7 +54,7 @@ You can curl to the various service endpoints to test the policies.
 $ curl http://pacman.pacman-dev-app.svc:8080
 
 # Should work from externally and from any namespace within the cluster
-$ PACMAN_ROUTE=`oc get route pacman -n pacman-dev-app  -o jsonpath='{.spec.host}'`
+$ PACMAN_ROUTE=`oc get route nginx -n pacman-dev-web  -o jsonpath='{.spec.host}'`
 $ curl https://$PACMAN_ROUTE 
 
 # Should only be allowed from the pacman-dev-app namespace

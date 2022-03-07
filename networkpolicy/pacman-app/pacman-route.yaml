@@ -10,7 +10,6 @@ spec:
   to:
     kind: Service
     name: pacman
-
   tls:
     termination: edge   
     insecureEdgeTerminationPolicy: Redirect

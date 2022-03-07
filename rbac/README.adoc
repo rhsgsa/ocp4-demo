@@ -33,12 +33,14 @@ user1 and user2 will have `ns-admin` ClusterRole permissions to `pacman-dev-app`
 
 [source, bash]
 ----
+$ oc new-project pacman-dev-web
 $ oc new-project pacman-dev-app
 $ oc new-project pacman-dev-mongo
 
 $ oc adm groups new pacman-dev-users
 $ oc adm groups add-users pacman-dev-users user1 user2
 
+$ oc create -f roleBindingNSAdmin.yaml -n pacman-dev-web
 $ oc create -f roleBindingNSAdmin.yaml -n pacman-dev-app
 $ oc create -f roleBindingNSAdmin.yaml -n pacman-dev-mongo
 ----
