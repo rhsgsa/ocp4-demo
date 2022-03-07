@@ -1,11 +1,11 @@
 
 = Introduction
 
-This demonstrates the usage of network policy between the Pac-Man app and mongo database. External ingress is only allowed to pacman app via the ingress controller.
+This demonstrates the usage of network policy between the Nginx web, Pac-Man app and mongo database. External ingress is only allowed to Nginx via the ingress controller.
 
-1. Pacman app only allows from ingress controller
-2. Mongo db only allows ingress from pacman app
-
+1. Nginx reverse proxy only allows ingress from ingress controller
+2. Pacman app only allows ingress from Nginx
+3. Mongo db only allows ingress from pacman app 
 
 == Setup group and users
 
